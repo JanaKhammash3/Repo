@@ -1,11 +1,13 @@
 ﻿import time
 import pandas as pd
 import numpy as np
-#comment test
+
 # Dictionary to map city names to their respective data files
-CITY_FILES = { 'chicago': 'chicago.csv',
-              'new york city': 'new_york_city.csv',
-              'washington': 'washington.csv' }
+CITY_FILES = {
+    'chicago': 'chicago.csv',
+    'new york city': 'new_york_city.csv',
+    'washington': 'washington.csv'
+}
 
 def get_user_inputs():
     """Asks the user to specify a city, month, and day to analyze."""
@@ -60,72 +62,80 @@ def load_bike_data(selected_city, chosen_month, chosen_day):
     
     # Convert Start Time to datetime format
     df['Start Time'] = pd.to_datetime(df['Start Time'])
-    
+
+    # Extract month and weekday
     df['Month'] = df['Start Time'].dt.month
     df['Day of Week'] = df['Start Time'].dt.dayofweek + 1  # 1 = Sunday, 7 = Saturday
-    
+
     # Apply month filter
     if chosen_month != 'none':
         months = ['january', 'february', 'march', 'april', 'may', 'june']
         month_index = months.index(chosen_month) + 1
         df = df[df['Month'] == month_index]
-    
+
     # Apply day filter
     if chosen_day:
         df = df[df['Day of Week'] == chosen_day]
-    
+
     return df
 
 def display_time_stats(df):
+    """Displays statistics on the most frequent times of travel."""
     print('\nFinding Most Frequent Travel Times...\n')
     start = time.time()
-    
+
+    # REFACTORED: modern f-strings for better readability
     print('Most common month:', df['Month'].mode()[0])
     print('Most common day of week:', df['Day of Week'].mode()[0])
     print('Most common start hour:', df['Start Time'].dt.hour.mode()[0])
-    
-    print("\nTime taken: %s seconds." % (time.time() - start))
+
+    print(f"\nTime taken: {time.time() - start:.2f} seconds.")
     print('-' * 40)
 
 def display_station_stats(df):
+    """Displays statistics on the most popular stations and trip."""
     print('\nFinding Most Popular Stations and Trips...\n')
     start = time.time()
-    
+
     print('Most common start station:', df['Start Station'].mode()[0])
     print('Most common end station:', df['End Station'].mode()[0])
-    
+
     common_route = df.groupby(['Start Station', 'End Station']).size().idxmax()
     print(f'Most common trip: From {common_route[0]} to {common_route[1]}')
-    
-    print("\nTime taken: %s seconds." % (time.time() - start))
+
+    print(f"\nTime taken: {time.time() - start:.2f} seconds.")
     print('-' * 40)
 
 def display_trip_duration_stats(df):
+    """Displays statistics on the total and average trip duration."""
     print('\nCalculating Trip Durations...\n')
     start = time.time()
-    
+
     print('Total travel time:', df['Trip Duration'].sum(), 'seconds')
     print('Average travel time:', df['Trip Duration'].mean(), 'seconds')
-    
-    print("\nTime taken: %s seconds." % (time.time() - start))
+
+    print(f"\nTime taken: {time.time() - start:.2f} seconds.")
     print('-' * 40)
 
 def display_user_stats(df, selected_city):
+    """Displays statistics on bikeshare users."""
     print('\nAnalyzing User Data...\n')
     start = time.time()
-    
+
     print('User Type Counts:\n', df['User Type'].value_counts())
-    
-    if selected_city in ['chicago', 'new york city']:
+
+    # REFACTORED: more robust city check using dictionary
+    if selected_city in CITY_FILES and selected_city != 'washington':
         print('Gender Counts:\n', df['Gender'].value_counts(dropna=True))
         print('Earliest birth year:', int(df['Birth Year'].min()))
         print('Most recent birth year:', int(df['Birth Year'].max()))
         print('Most common birth year:', int(df['Birth Year'].mode()[0]))
-    
-    print("\nTime taken: %s seconds." % (time.time() - start))
+
+    print(f"\nTime taken: {time.time() - start:.2f} seconds.")
     print('-' * 40)
 
 def display_raw_data(df):
+    """Displays raw data in chunks of 5 rows upon user request."""
     row_index = 0
     while True:
         show_data = input('\nWould you like to see the raw data? Enter yes or no:\n').lower()
@@ -136,7 +146,7 @@ def display_raw_data(df):
         if row_index >= len(df):
             print("\nNo more data to display.")
             break
-            
+
 def main():
     """Main function to execute the bike data analysis program."""
     while True:
@@ -147,8 +157,8 @@ def main():
         display_station_stats(df)
         display_trip_duration_stats(df)
         display_user_stats(df, selected_city)
-        
-        # Display raw data upon request
+
+        # Show raw data upon request
         display_raw_data(df)
 
         restart_prompt = input('\nWould you like to restart? Enter yes or no:\n').lower()
