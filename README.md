@@ -22,6 +22,6 @@ The script is interactive and runs via the terminal, prompting the user for inpu
 > Note: .csv files are not included in the GitHub repo due to size restrictions and are listed in .gitignore.
 
 ### Credits  
-- [Udacity GitHub Repository](https://github.com/udacity/pdsnd_github) – for the starter repository  
-- [Pandas Documentation](https://pandas.pydata.org/docs/) – for data manipulation techniques  
-- Various StackOverflow threads for troubleshooting tips
+- [Udacity GitHub Repository](https://github.com/udacity/pdsnd_github) – for the starter repository.  
+- [Pandas Documentation](https://pandas.pydata.org/docs/) – for data manipulation techniques.  
+- Various StackOverflow threads for troubleshooting tips.
